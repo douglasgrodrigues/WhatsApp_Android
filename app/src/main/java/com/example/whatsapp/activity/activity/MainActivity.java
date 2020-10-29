@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
 
         switch (item.getItemId()) {
+            //teste
             case R.id.menuSair:
                 deslogarUsuario();
                 finish();
