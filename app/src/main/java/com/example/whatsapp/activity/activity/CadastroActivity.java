@@ -6,12 +6,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.whatsapp.R;
 import com.example.whatsapp.activity.config.ConfiguracaoFirebase;
 import com.example.whatsapp.activity.helper.Base64Custom;
+import com.example.whatsapp.activity.helper.UsuarioFirebase;
 import com.example.whatsapp.activity.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,7 +36,7 @@ public class CadastroActivity extends AppCompatActivity {
         setContentView(R.layout.activity_cadastro);
 
 
-        editNome = findViewById(R.id.editNome);
+        editNome = findViewById(R.id.editPerfilNome);
         editEmail = findViewById(R.id.editEmail);
         editSenha = findViewById(R.id.editSenha);
         //buttonCadastro = findViewById(R.id.buttonCadastro);
@@ -44,7 +44,8 @@ public class CadastroActivity extends AppCompatActivity {
     }
 
 
-    public void cadastrarUsuario(Usuario usuario){
+
+    public void cadastrarUsuario(final Usuario usuario){
 
 
         autenticacao = ConfiguracaoFirebase.getFirebaseAutenticacao();
@@ -55,14 +56,21 @@ public class CadastroActivity extends AppCompatActivity {
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         if (task.isSuccessful()) {
-                            /*String idUsuario = Base64Custom.codificarBase64(usuario.getEmail());
-                            usuario.setIdUsuario(idUsuario);
-                            //usuario.salvar();*/
                             Toast.makeText(CadastroActivity.this,
                                     "Sucesso ao cadastrar usuario!",
                                     Toast.LENGTH_SHORT).show();
 
+                            UsuarioFirebase.atualizarNomeUsuario(usuario.getNome());
                             finish();
+
+                            try {
+                                String idUsuario = Base64Custom.codificarBase64(usuario.getEmail());
+                                usuario.setId(idUsuario);
+                                usuario.salvar();
+
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
 
                         } else {
                             String excecao = "";
