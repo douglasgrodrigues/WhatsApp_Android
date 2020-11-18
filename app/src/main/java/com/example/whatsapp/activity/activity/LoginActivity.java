@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-    //Verifica se usuario já esta logado ao abrir o app
+    //Verifica se usuarioExibicao já esta logado ao abrir o app
     @Override
     protected void onStart() {
         super.onStart();

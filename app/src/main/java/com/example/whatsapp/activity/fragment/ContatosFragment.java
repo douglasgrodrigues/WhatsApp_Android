@@ -113,6 +113,9 @@ public class ContatosFragment extends Fragment {
     }
 
     public void recuperarContatos(){
+
+        listaContatos.clear();
+
         valueEventListenerContatos = usuarioRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {

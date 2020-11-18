@@ -80,7 +80,7 @@ public class ConfiguracoesActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        //Recuperar dados do usuario
+        //Recuperar dados do usuarioExibicao
         final FirebaseUser usuario = UsuarioFirebase.getUsuarioAtual();
         Uri url = usuario.getPhotoUrl();
 
