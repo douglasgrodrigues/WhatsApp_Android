@@ -5,29 +5,48 @@ import com.google.firebase.database.DatabaseReference;
 
 public class Conversa {
 
-    private String idRemetenta;
+    private String idRemetente;
     private String idDestinatario;
     private String ultimaMensagem;
     private Usuario usuarioExibicao;
+    private String isGroup;
+    private Grupo grupo;
 
     public Conversa() {
+        this.setIsGroup("false");
     }
 
     public void salvar() {
         DatabaseReference database = ConfiguracaoFirebase.getFirebaseDataBase();
         DatabaseReference conversaRef = database.child("conversas");
 
-        conversaRef.child(this.getIdRemetenta())
+        conversaRef.child(this.getIdRemetente())
                 .child(this.getIdDestinatario())
                 .setValue(this);
     }
 
-    public String getIdRemetenta() {
-        return idRemetenta;
+    public String getIsGroup() {
+        return isGroup;
     }
 
-    public void setIdRemetenta(String idRemetenta) {
-        this.idRemetenta = idRemetenta;
+    public void setIsGroup(String isGroup) {
+        this.isGroup = isGroup;
+    }
+
+    public Grupo getGrupo() {
+        return grupo;
+    }
+
+    public void setGrupo(Grupo grupo) {
+        this.grupo = grupo;
+    }
+
+    public String getIdRemetente() {
+        return idRemetente;
+    }
+
+    public void setIdRemetente(String idRemetente) {
+        this.idRemetente = idRemetente;
     }
 
     public String getIdDestinatario() {

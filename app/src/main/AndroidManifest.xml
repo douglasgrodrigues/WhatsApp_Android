@@ -17,6 +17,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".activity.activity.CadastroGrupoActivity"
+            android:label="@string/title_activity_cadastro_grupo"
+            android:parentActivityName=".activity.activity.GrupoActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.whatsapp.activity.activity.GrupoActivity" />
+        </activity>
+        <activity
+            android:name=".activity.activity.GrupoActivity"
+            android:label="@string/title_activity_grupo"
+            android:parentActivityName=".activity.activity.MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.example.whatsapp.activity.activity.MainActivity" />
+        </activity>
+        <activity
             android:name=".activity.activity.ChatActivity"
             android:label="@string/title_activity_chat"
             android:parentActivityName=".activity.activity.MainActivity"
@@ -36,7 +54,7 @@
         <activity android:name=".activity.activity.CadastroActivity" />
         <activity
             android:name=".activity.activity.ConfiguracoesActivity"
-            android:parentActivityName=".activity.activity.MainActivity"></activity>
+            android:parentActivityName=".activity.activity.MainActivity" />
     </application>
 
 </manifest>

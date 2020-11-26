@@ -11,14 +11,13 @@ import com.example.whatsapp.activity.config.ConfiguracaoFirebase;
 import com.example.whatsapp.activity.helper.Base64Custom;
 import com.example.whatsapp.activity.helper.UsuarioFirebase;
 import com.example.whatsapp.activity.model.Conversa;
+import com.example.whatsapp.activity.model.Grupo;
 import com.example.whatsapp.activity.model.Mensagem;
 import com.example.whatsapp.activity.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -61,6 +60,7 @@ public class ChatActivity extends AppCompatActivity {
     private StorageReference storage;
     private DatabaseReference mensagensRef;
     private ChildEventListener childEventListenerMensagens;
+    private Grupo grupo;
 
     //Indeitificador usuarioExibicao REMETENTE e DESTINATARIO
     private String idUsuarioRemetente;
@@ -99,20 +99,41 @@ public class ChatActivity extends AppCompatActivity {
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
 
-            usuarioDestinatario = (Usuario) bundle.getSerializable("chatContato");
-            textViewNome.setText(usuarioDestinatario.getNome());
+            if (bundle.containsKey("chatGrupo")){
 
-            String foto = usuarioDestinatario.getFoto();
-            if (foto != null) {
-                Uri url = Uri.parse(usuarioDestinatario.getFoto());
-                Glide.with(ChatActivity.this)
-                        .load(url)
-                        .into(circleImageViewFoto);
+                grupo = (Grupo) bundle.getSerializable("chatGrupo");
+                idUsuarioDestinatario = grupo.getId();
+
+                textViewNome.setText(grupo.getNome());
+
+                String foto = grupo.getFoto();
+                if (foto != null) {
+                    Uri url = Uri.parse(foto);
+                    Glide.with(ChatActivity.this)
+                            .load(url)
+                            .into(circleImageViewFoto);
+                }else {
+                    circleImageViewFoto.setImageResource(R.drawable.padrao);
+                }
+
+
             }else {
-                circleImageViewFoto.setImageResource(R.drawable.padrao);
+                usuarioDestinatario = (Usuario) bundle.getSerializable("chatContato");
+                textViewNome.setText(usuarioDestinatario.getNome());
+
+                String foto = usuarioDestinatario.getFoto();
+                if (foto != null) {
+                    Uri url = Uri.parse(usuarioDestinatario.getFoto());
+                    Glide.with(ChatActivity.this)
+                            .load(url)
+                            .into(circleImageViewFoto);
+                }else {
+                    circleImageViewFoto.setImageResource(R.drawable.padrao);
+                }
+
+                //Recuperar dados destinatario
+                idUsuarioDestinatario = Base64Custom.codificarBase64(usuarioDestinatario.getEmail());
             }
-            //Recuperar dados destinatario
-            idUsuarioDestinatario = Base64Custom.codificarBase64(usuarioDestinatario.getEmail());
         }
 
         //configurar adapter do recycler de mensagens
@@ -225,6 +246,7 @@ public class ChatActivity extends AppCompatActivity {
     public void enviarMensagem(View view){
 
         String textoMensagem = editMensagem.getText().toString();
+
         if (!textoMensagem.isEmpty()){
 
             Mensagem mensagem = new Mensagem();
@@ -251,7 +273,7 @@ public class ChatActivity extends AppCompatActivity {
     private void salvarConversa(Mensagem msg){
 
         Conversa conversaRemetente = new Conversa();
-        conversaRemetente.setIdRemetenta(idUsuarioRemetente);
+        conversaRemetente.setIdRemetente(idUsuarioRemetente);
         conversaRemetente.setIdDestinatario(idUsuarioDestinatario);
         conversaRemetente.setUltimaMensagem(msg.getMensagem());
         conversaRemetente.setUsuarioExibicao(usuarioDestinatario);

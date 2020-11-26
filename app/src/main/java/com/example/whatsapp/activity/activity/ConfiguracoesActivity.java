@@ -162,7 +162,6 @@ public class ConfiguracoesActivity extends AppCompatActivity {
                     imagem.compress(Bitmap.CompressFormat.JPEG, 70, baos);
                     byte[] dadosImagem = baos.toByteArray();
 
-
                     //Salvar imagem no firebase
                     final StorageReference imagemRef = storageReference
                             .child("imagens")    //Criando as pastas dentro do firebase

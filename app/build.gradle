@@ -11,6 +11,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        android.defaultConfig.vectorDrawables.useSupportLibrary = true
 
     }
     buildTypes {
@@ -40,6 +41,9 @@ dependencies {
     //Biblioteca para arredondamento de imagem
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.firebaseui:firebase-ui-storage:0.6.0'
+
+    //Mecanismos de vbusca
+    implementation 'com.miguelcatalan:materialsearchview:1.4.0'
 
     android.defaultConfig.vectorDrawables.useSupportLibrary = true
 

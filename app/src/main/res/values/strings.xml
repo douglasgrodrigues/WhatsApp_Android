@@ -15,4 +15,6 @@
     <string name="nome_usuario">Nome do usuário</string>
     <string name="mensagem_nome">Esta não é o seu nome de usuário nem sua senha. Esse nome ficará visível para seus contatos do WhatsApp</string>
     <string name="title_activity_chat">ChatActivity</string>
+    <string name="title_activity_grupo">GrupoActivity</string>
+    <string name="title_activity_cadastro_grupo">CadastroGrupoActivity</string>
 </resources>

@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 
 import com.example.whatsapp.R;
 import com.example.whatsapp.activity.activity.ChatActivity;
+import com.example.whatsapp.activity.activity.GrupoActivity;
 import com.example.whatsapp.activity.adapter.ContatosAdapter;
 import com.example.whatsapp.activity.config.ConfiguracaoFirebase;
 import com.example.whatsapp.activity.helper.RecyclerItemClickListener;
@@ -77,7 +78,7 @@ public class ContatosFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewListaContatos.setLayoutManager(layoutManager);
         recyclerViewListaContatos.setHasFixedSize(true);
-        recyclerViewListaContatos.setAdapter( adapter );
+        recyclerViewListaContatos.setAdapter(adapter);
 
         //Configurar o evento de clique no recyclerView
         recyclerViewListaContatos.addOnItemTouchListener(
@@ -89,10 +90,21 @@ public class ContatosFragment extends Fragment {
                             public void onItemClick(View view, int position) {
 
                                 Usuario usuarioSelecionado = listaContatos.get(position);
-                                Intent i = new Intent(getActivity(), ChatActivity.class);
-                                i.putExtra("chatContato", usuarioSelecionado);
-                                startActivity(i);
+                                boolean cabecalho = usuarioSelecionado.getEmail().isEmpty();
 
+                                if (cabecalho) {
+
+                                    //Intent é utilizada para abrir a outro acitivi, neste caso activity GRUPO
+                                    Intent i = new Intent(getActivity(), GrupoActivity.class);
+                                    startActivity(i);
+
+
+
+                                } else {
+                                    Intent i = new Intent(getActivity(), ChatActivity.class);
+                                    i.putExtra("chatContato", usuarioSelecionado);
+                                    startActivity(i);
+                                }
                             }
 
                             @Override
@@ -108,29 +120,33 @@ public class ContatosFragment extends Fragment {
                 )
         );
 
+        //Usuario com e-mail vazio para ser exibido como CABEÇALHO de novo grupo
+        Usuario itemGrupo = new Usuario();
+        itemGrupo.setNome("Novo grupo");
+        itemGrupo.setEmail("");
+
+        listaContatos.add(itemGrupo);
+
         return view;
     }
 
-    public void recuperarContatos(){
+    public void recuperarContatos() {
 
-        listaContatos.clear();
+        //listaContatos.clear();
 
         valueEventListenerContatos = usuarioRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                for (DataSnapshot dados: snapshot.getChildren()){
+                for (DataSnapshot dados : snapshot.getChildren()) {
 
                     Usuario usuario = dados.getValue(Usuario.class);
 
                     String emailUsuarioAtual = usuarioAtual.getEmail();
 
-                    if (!emailUsuarioAtual.equals(usuario.getEmail())){
+                    if (!emailUsuarioAtual.equals(usuario.getEmail())) {
                         listaContatos.add(usuario);
-                    }else {
-
                     }
-
                 }
                 adapter.notifyDataSetChanged();
             }

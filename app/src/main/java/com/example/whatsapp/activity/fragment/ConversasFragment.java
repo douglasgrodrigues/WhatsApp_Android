@@ -45,8 +45,6 @@ public class ConversasFragment extends Fragment {
     private ChildEventListener childEventListenerConversas;
 
 
-
-
     public ConversasFragment() {
 
     }
@@ -62,7 +60,6 @@ public class ConversasFragment extends Fragment {
 
         //Congirurar o adapter
         adapter = new ConversasAdapter(listaConversas, getActivity());
-
 
 
         //Convfigurar o recyclerview
@@ -82,9 +79,17 @@ public class ConversasFragment extends Fragment {
 
                                 Conversa conversaSelecionada = listaConversas.get(position);
 
-                                Intent i = new Intent(getActivity(), ChatActivity.class);
-                                i.putExtra("chatContato", conversaSelecionada.getUsuarioExibicao());
-                                startActivity(i);
+                                if (conversaSelecionada.getIsGroup().equals("true")) {
+
+                                    Intent i = new Intent(getActivity(), ChatActivity.class);
+                                    i.putExtra("chatGrupo", conversaSelecionada.getGrupo());
+                                    startActivity(i);
+
+                                } else {
+                                    Intent i = new Intent(getActivity(), ChatActivity.class);
+                                    i.putExtra("chatContato", conversaSelecionada.getUsuarioExibicao());
+                                    startActivity(i);
+                                }
                             }
 
                             @Override
@@ -123,9 +128,38 @@ public class ConversasFragment extends Fragment {
         conversasRef.removeEventListener(childEventListenerConversas);
     }
 
-    public void recuperarConversas(){
+    public void pesquisarConversas(String texto) {
 
-        listaConversas.clear();
+        List<Conversa> listaConversasBusca = new ArrayList<>();
+
+        for (Conversa conversa : listaConversas) {
+
+            String nome = conversa.getUsuarioExibicao().getNome().toLowerCase();
+            String ultimaMensagem = conversa.getUltimaMensagem().toLowerCase();
+            if (nome.contains(texto) || ultimaMensagem.contains(texto)) {
+                listaConversasBusca.add(conversa);
+
+            }
+        }
+
+        adapter = new ConversasAdapter(listaConversasBusca, getActivity());
+        recyclerViewConversas.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+    }
+
+    public void recarregarConversas() {
+
+        adapter = new ConversasAdapter(listaConversas, getActivity());
+        recyclerViewConversas.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+
+    }
+
+
+    public void recuperarConversas() {
+
+        //listaConversas.clear();
 
         childEventListenerConversas = conversasRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -157,7 +191,6 @@ public class ConversasFragment extends Fragment {
 
             }
         });
-
 
 
     }
