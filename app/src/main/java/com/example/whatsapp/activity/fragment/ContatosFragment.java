@@ -18,9 +18,11 @@ import com.example.whatsapp.R;
 import com.example.whatsapp.activity.activity.ChatActivity;
 import com.example.whatsapp.activity.activity.GrupoActivity;
 import com.example.whatsapp.activity.adapter.ContatosAdapter;
+import com.example.whatsapp.activity.adapter.ConversasAdapter;
 import com.example.whatsapp.activity.config.ConfiguracaoFirebase;
 import com.example.whatsapp.activity.helper.RecyclerItemClickListener;
 import com.example.whatsapp.activity.helper.UsuarioFirebase;
+import com.example.whatsapp.activity.model.Conversa;
 import com.example.whatsapp.activity.model.Usuario;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -29,6 +31,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -89,6 +92,8 @@ public class ContatosFragment extends Fragment {
                             @Override
                             public void onItemClick(View view, int position) {
 
+                                List<Usuario> listaUsuariosAtualizada = adapter.getContatos();
+
                                 Usuario usuarioSelecionado = listaContatos.get(position);
                                 boolean cabecalho = usuarioSelecionado.getEmail().isEmpty();
 
@@ -97,7 +102,6 @@ public class ContatosFragment extends Fragment {
                                     //Intent é utilizada para abrir a outro acitivi, neste caso activity GRUPO
                                     Intent i = new Intent(getActivity(), GrupoActivity.class);
                                     startActivity(i);
-
 
 
                                 } else {
@@ -120,23 +124,18 @@ public class ContatosFragment extends Fragment {
                 )
         );
 
-        //Usuario com e-mail vazio para ser exibido como CABEÇALHO de novo grupo
-        Usuario itemGrupo = new Usuario();
-        itemGrupo.setNome("Novo grupo");
-        itemGrupo.setEmail("");
-
-        listaContatos.add(itemGrupo);
+       adicionarMenuNovoGrupo();
 
         return view;
     }
 
     public void recuperarContatos() {
 
-        //listaContatos.clear();
-
         valueEventListenerContatos = usuarioRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                limparListaContatos();
 
                 for (DataSnapshot dados : snapshot.getChildren()) {
 
@@ -157,5 +156,47 @@ public class ContatosFragment extends Fragment {
             }
         });
     }
+
+    public void limparListaContatos(){
+
+        listaContatos.clear();
+        adicionarMenuNovoGrupo();
+
+    }
+
+    public void adicionarMenuNovoGrupo(){
+
+        //Usuario com e-mail vazio para ser exibido como CABEÇALHO de novo grupo
+        Usuario itemGrupo = new Usuario();
+        itemGrupo.setNome("Novo grupo");
+        itemGrupo.setEmail("");
+
+        listaContatos.add(itemGrupo);
+    }
+
+    public void pesquisarContatos(String texto) {
+
+        List<Usuario> listaContatosBusca = new ArrayList<>();
+
+        for (Usuario usuario : listaContatos) {
+
+            String nome = usuario.getNome().toLowerCase();
+            if (nome.contains(texto)) {
+                listaContatosBusca.add(usuario);
+            }
+        }
+
+        adapter = new ContatosAdapter(listaContatosBusca, getActivity());
+        recyclerViewListaContatos.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    public void recarregarContatos() {
+
+        adapter = new ContatosAdapter(listaContatos, getActivity());
+        recyclerViewListaContatos.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
 
 }

@@ -13,6 +13,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.whatsapp.R;
+import com.example.whatsapp.activity.adapter.ContatosAdapter;
 import com.example.whatsapp.activity.config.ConfiguracaoFirebase;
 import com.example.whatsapp.activity.fragment.ContatosFragment;
 import com.example.whatsapp.activity.fragment.ConversasFragment;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
                         .add("Contatos", ContatosFragment.class)
                         .create()
         );
-        ViewPager viewPager = findViewById(R.id.viewPager);
+        final ViewPager viewPager = findViewById(R.id.viewPager);
         viewPager.setAdapter(adapter);
 
         SmartTabLayout viewPagerTab = findViewById(R.id.viewPagerTab);
@@ -83,6 +84,32 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 //Log.d("evento", "onQueryTextChange");
+
+                //verifica se esta pesquisando conversas ou contatos
+                //a partir da tab que esta ativa
+                switch (viewPager.getCurrentItem()){
+                    case 0:
+                        ConversasFragment conversasFragment = (ConversasFragment) adapter.getPage(0);
+                        if (newText != null && !newText.isEmpty()){
+                            conversasFragment.pesquisarConversas(newText.toLowerCase());
+                        }else {
+                            conversasFragment.recarregarConversas();
+                        }
+
+                        break;
+
+                    case 1:
+                        ContatosFragment contatosFragment = (ContatosFragment) adapter.getPage(1);
+                        if (newText != null && !newText.isEmpty()){
+                            contatosFragment.pesquisarContatos(newText.toLowerCase());
+                        }else {
+                            contatosFragment.recarregarContatos();
+                        }
+
+                        break;
+
+
+                }
 
                 //Acessar atributos e metodos dentro da outra FRAGMENT
                 ConversasFragment fragment = (ConversasFragment)adapter.getPage(0);

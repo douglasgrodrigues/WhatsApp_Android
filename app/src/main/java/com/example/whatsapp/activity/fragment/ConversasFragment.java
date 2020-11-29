@@ -44,11 +44,8 @@ public class ConversasFragment extends Fragment {
     private DatabaseReference conversasRef;
     private ChildEventListener childEventListenerConversas;
 
-
     public ConversasFragment() {
-
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -77,7 +74,8 @@ public class ConversasFragment extends Fragment {
                             @Override
                             public void onItemClick(View view, int position) {
 
-                                Conversa conversaSelecionada = listaConversas.get(position);
+                                List<Conversa> listaConversasAtualizada = adapter.getConversas();
+                                Conversa conversaSelecionada = listaConversasAtualizada.get(position);
 
                                 if (conversaSelecionada.getIsGroup().equals("true")) {
 
@@ -104,7 +102,6 @@ public class ConversasFragment extends Fragment {
                         }
                 )
         );
-
 
         //Configura conversas Ref
         String identificadoUsuario = UsuarioFirebase.getIdentificadorUsuario();
@@ -134,11 +131,19 @@ public class ConversasFragment extends Fragment {
 
         for (Conversa conversa : listaConversas) {
 
-            String nome = conversa.getUsuarioExibicao().getNome().toLowerCase();
-            String ultimaMensagem = conversa.getUltimaMensagem().toLowerCase();
-            if (nome.contains(texto) || ultimaMensagem.contains(texto)) {
-                listaConversasBusca.add(conversa);
+            if (conversa.getUsuarioExibicao() != null) {
+                String nome = conversa.getUsuarioExibicao().getNome().toLowerCase();
+                String ultimaMensagem = conversa.getUltimaMensagem().toLowerCase();
+                if (nome.contains(texto) || ultimaMensagem.contains(texto)) {
+                    listaConversasBusca.add(conversa);
+                }
+            } else {
+                String nome = conversa.getGrupo().getNome().toLowerCase();
+                String ultimaMensagem = conversa.getUltimaMensagem().toLowerCase();
 
+                if (nome.contains(texto) || ultimaMensagem.contains(texto)) {
+                    listaConversasBusca.add(conversa);
+                }
             }
         }
 
@@ -159,7 +164,7 @@ public class ConversasFragment extends Fragment {
 
     public void recuperarConversas() {
 
-        //listaConversas.clear();
+        listaConversas.clear();
 
         childEventListenerConversas = conversasRef.addChildEventListener(new ChildEventListener() {
             @Override
